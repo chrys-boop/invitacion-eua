@@ -2,6 +2,47 @@
   var mt=document.getElementById('marquee-track');
   if(mt) mt.innerHTML += mt.innerHTML;
 
+  // Añade globos flotantes y estrellas sin modificar el HTML.
+  // Las animaciones respetan la regla CSS de movimiento reducido.
+  function addDecorations(){
+    var sky=document.querySelector('.sky');
+    if(!sky) return;
+
+    var balloonColors=['#4db2f0','#f27ba3','#7cc0f2','#f79cbb','#ffe29a','#d3b8f5','#d93a6e','#1a86d6'];
+    var balloonPositions=[22,38,58,72,94,3,27,52,67,83,12,45];
+    for(var i=0;i<balloonPositions.length;i++){
+      var balloon=document.createElement('div');
+      balloon.className='balloon';
+      balloon.setAttribute('aria-hidden','true');
+      balloon.style.left=balloonPositions[i]+'%';
+      balloon.style.width=(20+(i%4)*4)+'px';
+      balloon.style.height=(27+(i%4)*5)+'px';
+      balloon.style.backgroundColor=balloonColors[i%balloonColors.length];
+      balloon.style.opacity=(0.35+(i%4)*0.08).toFixed(2);
+      balloon.style.animationDuration=(18+(i%6)*2)+'s';
+      balloon.style.animationDelay=(-1*(i*2.7%19))+'s';
+      sky.appendChild(balloon);
+    }
+
+    var starPositions=[
+      [8,18],[24,8],[42,22],[57,10],[75,29],[95,12],[16,63],[34,48],
+      [63,58],[79,72],[5,84],[27,91],[49,76],[70,90],[91,48],[38,6]
+    ];
+    for(var j=0;j<starPositions.length;j++){
+      var star=document.createElement('span');
+      star.className='sparkle';
+      star.setAttribute('aria-hidden','true');
+      star.textContent=j%3===0?'✧':'✦';
+      star.style.left=starPositions[j][0]+'%';
+      star.style.top=starPositions[j][1]+'%';
+      star.style.fontSize=(11+(j%4)*3)+'px';
+      star.style.color=j%2===0?'#e9b949':'#fff';
+      star.style.animationDelay=(-0.35*j)+'s';
+      sky.appendChild(star);
+    }
+  }
+  addDecorations();
+
   if('IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion: reduce)').matches){
     var io=new IntersectionObserver(function(entries){
       entries.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
